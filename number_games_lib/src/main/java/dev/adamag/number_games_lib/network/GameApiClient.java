@@ -9,15 +9,17 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class GameApiClient {
     private static final String BASE_URL = "numbers-game-server-sdk-kpah.vercel.app";
 
-    private static final Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(new OkHttpClient.Builder()
-                    .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-                    .build())
-            .build();
+    private static GameApiService gameApiService;
 
-    public static GameApiService getApiService() {
-        return retrofit.create(GameApiService.class);
+    public static GameApiService getInstance() {
+        if (gameApiService == null) {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create()) // Converts JSON responses into Java objects
+                    .build();
+
+            gameApiService = retrofit.create(GameApiService.class);
+        }
+        return gameApiService;
     }
 }
